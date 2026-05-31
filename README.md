@@ -1,18 +1,17 @@
-<div align="center">
+# Battleship
 
-![preview](preview.jpg)
+> [Русская версия](README_RU.md)
 
-[![C++17](https://img.shields.io/badge/C%2B%2B-17-blue?logo=cplusplus&logoColor=white)](https://en.cppreference.com/w/cpp/17)
+[![C++20](https://img.shields.io/badge/C%2B%2B-20-blue?logo=cplusplus&logoColor=white)](https://en.cppreference.com/w/cpp/20)
 [![CMake](https://img.shields.io/badge/CMake-3.12%2B-064F8C?logo=cmake&logoColor=white)](https://cmake.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-</div>
 
-Консольный бот для игры в [морской бой](https://ru.wikipedia.org/wiki/%D0%9C%D0%BE%D1%80%D1%81%D0%BA%D0%BE%D0%B9_%D0%B1%D0%BE%D0%B9_(%D0%B8%D0%B3%D1%80%D0%B0)), написан в рамках курса по C++ в ИТМО. Взаимодействие — через stdin/stdout по текстовому протоколу. Размер поля и количество кораблей произвольные.
+Console bot for [Battleship](https://en.wikipedia.org/wiki/Battleship_(game)) over stdin/stdout. Supports master/slave roles, configurable grid size and ship counts, and two shot strategies: ordered sweep and hunt-and-target. Written as part of a C++ course at ITMO University.
 
-Два режима: **master** задаёт параметры игры, **slave** их принимает. Две стратегии стрельбы: `ordered` (по порядку) и `custom` (охота с добиванием).
+Two roles: **master** sets game parameters, **slave** receives them. All interaction is via a line-based text protocol.
 
-## Сборка
+## Build
 
 ```bash
 git clone https://github.com/notakeith/battleship-bot.git
@@ -21,40 +20,40 @@ cmake -B build && cmake --build build
 ctest --test-dir build
 ```
 
-Требования: CMake ≥ 3.12, GCC 13+ или Clang 17+.
+Requirements: CMake ≥ 3.12, GCC 13+ or Clang 17+.
 
-## Протокол
+## Protocol
 
-Все команды и ответы — строки в нижнем регистре, разделены `\n`.
+All commands and responses are lowercase strings separated by `\n`.
 
-| Команда | Ответ | Описание |
+| Command | Response | Description |
 |---|---|---|
-| `ping` | `pong` | проверка связи |
-| `exit` | `ok` | завершить программу |
-| `create master` | `ok` | режим master (фиксированное поле 5×4, 3 четырёхпалубных) |
-| `create slave` | `ok` | режим slave (принимает параметры извне) |
-| `start` | `ok` | начать партию, расставить корабли |
-| `stop` | `ok` | остановить партию |
-| `set width N` | `ok` | задать ширину поля |
-| `get width` | `N` | получить ширину поля |
-| `set height N` | `ok` | задать высоту поля |
-| `get height` | `N` | получить высоту поля |
-| `set count [1-4] N` | `ok` | задать количество кораблей типа 1–4 |
-| `get count [1-4]` | `N` | получить количество кораблей типа 1–4 |
-| `set strategy ordered` | `ok` | стратегия: последовательный обход |
-| `set strategy custom` | `ok` | стратегия: охота с добиванием |
-| `shot X Y` | `hit` / `miss` / `kill` | принять выстрел по своему полю |
-| `shot` | `X Y` | запросить координаты следующего выстрела |
-| `set result [miss,hit,kill]` | — | сообщить результат последнего выстрела |
-| `finished` | `yes` / `no` | партия завершена? |
-| `win` | `yes` / `no` | победа? |
-| `lose` | `yes` / `no` | поражение? |
-| `dump PATH` | `ok` | сохранить поле в файл |
-| `load PATH` | `ok` | загрузить поле из файла |
+| `ping` | `pong` | connection check |
+| `exit` | `ok` | terminate program |
+| `create master` | `ok` | master mode (fixed 5×4 grid, 3 four-cell ships) |
+| `create slave` | `ok` | slave mode (accepts parameters from master) |
+| `start` | `ok` | start game, place ships |
+| `stop` | `ok` | stop current game |
+| `set width N` | `ok` | set grid width |
+| `get width` | `N` | get grid width |
+| `set height N` | `ok` | set grid height |
+| `get height` | `N` | get grid height |
+| `set count [1-4] N` | `ok` | set ship count for type 1–4 |
+| `get count [1-4]` | `N` | get ship count for type 1–4 |
+| `set strategy ordered` | `ok` | strategy: sequential sweep |
+| `set strategy custom` | `ok` | strategy: hunt-and-target |
+| `shot X Y` | `hit` / `miss` / `kill` | receive shot on own grid |
+| `shot` | `X Y` | request next shot coordinates |
+| `set result [miss,hit,kill]` | — | report result of last shot |
+| `finished` | `yes` / `no` | is the game over? |
+| `win` | `yes` / `no` | did we win? |
+| `lose` | `yes` / `no` | did we lose? |
+| `dump PATH` | `ok` | save grid to file |
+| `load PATH` | `ok` | load grid from file |
 
-> После каждой команды `shot` (запрос выстрела) необходимо передать `set result` перед следующим `shot`.
+> After each `shot` (request), `set result` must be sent before the next `shot`.
 
-## Формат файла (dump/load)
+## File format (dump/load)
 
 ```
 5 20
@@ -63,4 +62,4 @@ ctest --test-dir build
 4 v 4 0
 ```
 
-Первая строка — `width height`. Далее строки вида `size direction x y`, где `direction` — `h` (горизонталь) или `v` (вертикаль).
+First line: `width height`. Each following line: `size direction x y`, where direction is `h` (horizontal) or `v` (vertical).
