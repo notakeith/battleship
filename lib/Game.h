@@ -37,8 +37,8 @@ class Game {
     bool down_direction_ = true;
     int deep_ = 1;
 
-    uint64_t ordered_straegy_x_ = 0;
-    uint64_t ordered_straegy_y_ = 0;
+    uint64_t ordered_strategy_x_ = 0;
+    uint64_t ordered_strategy_y_ = 0;
 
    public:
     ~Game() {
@@ -62,7 +62,7 @@ class Game {
     void setHeight(uint64_t height) { height_ = height; }
     uint64_t getHeight() { return height_; }
     void setCount(int type, uint64_t count) { count_[type] = count; }
-    uint64_t getCount(int type, uint64_t count) { return count_[type]; }
+    uint64_t getCount(int type) { return count_[type]; }
     void setStrategy(bool strategy) { strategy_ = strategy; }
     bool getStrategy() { return strategy_; }
 
@@ -155,14 +155,14 @@ class Game {
     }
 
     void orderedShot() {
-        std::cout << ordered_straegy_x_ << " " << ordered_straegy_y_
+        std::cout << ordered_strategy_x_ << " " << ordered_strategy_y_
                   << std::endl;
-        if (ordered_straegy_x_ < width_ && ordered_straegy_y_ < height_) {
-            if (ordered_straegy_x_ < width_ - 1) {
-                ordered_straegy_x_++;
+        if (ordered_strategy_x_ < width_ && ordered_strategy_y_ < height_) {
+            if (ordered_strategy_x_ < width_ - 1) {
+                ordered_strategy_x_++;
             } else {
-                ordered_straegy_x_ = 0;
-                ordered_straegy_y_++;
+                ordered_strategy_x_ = 0;
+                ordered_strategy_y_++;
             }
         }
     }
@@ -188,6 +188,7 @@ class Game {
         }
 
         if (last_shot_ == "hit" && !has_success_shot_) {
+            has_success_shot_ = true;
             last_success_shot_x_ = last_shot_x_;
             last_success_shot_y_ = last_shot_y_;
             resetDirections();
